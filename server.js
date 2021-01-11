@@ -5,9 +5,7 @@ const app = express();
 const port = process.env.PORT || 5000;
 const connectDatabase = require("./db/index")
 const moment = require("moment");
-app.use(cors({
-  origin:['localhost:3000', 'mip-frontend.s3-website.ap-south-1.amazonaws.com']
-}));
+app.use(cors());
 app.use(express.json({extended: false}));
 
 
