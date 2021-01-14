@@ -41,3 +41,19 @@ module.exports.deleteSession = async (session_id) =>{
     let op = await db.query('delete from scheduled_interviews where session_id = $1 returning *;',[session_id])
     return op;
 }
+
+// get data of all the experts on the platform
+module.exports.getExpertData = async() => {
+    let op = await db.query('select first_name, last_name, current_org, expert_in_field, charges, ratings, is_verified, expert_info from expert INNER JOIN user_profiles ON (expert.user_id = user_profiles.user_id);');
+    return op;
+}
+
+module.exports.getSessionInfo = async(session_id) => {
+    let op = await db.query('select * from scheduled_interviews where session_id = $1',[session_id]);
+    return op;
+}
+
+module.exports.getInterviewRequestInfo = async(schedule_id) => {
+    let op = await db.query('select * from interview_requests where schedule_id=$1',[schedule_id]);
+    return op
+}
