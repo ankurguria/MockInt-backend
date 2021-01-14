@@ -91,19 +91,22 @@ slotBookingController = async (req, res) => {
 //         console.log(err.message);
 //     }
 // }
+
 module.exports.slotBookingController = slotBookingController;
 
 module.exports.cancelSession = async (req, res) => {
     let data = req.body.session_id;
     try{
-        if(data.is_expert_interview){
+        if(req.body.is_expert_interview){
             let deletedData = await query.deleteSession(data);
             console.log(deletedData.rows[0]);
             return res.status(200).send("interview canceled successfully");
         }else{
-            let sessionInfo = query.getSessionInfo(data);
-            let user = ((req.user.id===sessionInfo.interviewer_id) ? interviewee_id:interviewer_id);
-            let cancledUserData = {
+            let sessionInfo = await query.getSessionInfo(data);
+            console.log(data);
+            console.log(sessionInfo);
+            let user = ((req.user.id===sessionInfo.rows[0].interviewer_id) ? sessionInfo.rows[0].interviewee_id : sessionInfo.rows[0].interviewer_id);
+            let canceledUserData = {
                 "body":{
                     "user":{
                         "id":user,
@@ -114,24 +117,17 @@ module.exports.cancelSession = async (req, res) => {
                     "called_due_to_cancel": true
                 }
             }
-            let res={};
-            slotBookingController(cancledUserData, res);
+            // let res={};
+            // slotBookingController(cancledUserData, res);
             let deletedData = await query.deleteSession(data);
-            console.log(deletedData.rows[0]);
-            return res.status(200).send("interview canceled successfully");
+            // console.log(canceledUserData);
+            res.status(200).send(canceledUserData);
         }
         
     }catch(err){
         console.log(err.message);
     }
 }
-
-/*for cancel session json required
-{
-    "session_id":"",
-}
-*/
-
 
 
 module.exports.expertAcceptRequest = async (req,res) => {
@@ -146,7 +142,8 @@ module.exports.expertAcceptRequest = async (req,res) => {
             "created_at" : requestInfo.rows[0].created_at,
             "updated_at" : moment().format(),
             "is_finished" : false,
-            "is_expert_interview" : true
+            "is_expert_interview" : true,
+            "type_of_interview": requestInfo.rows[0].type_of_interview
         }
 
         let scheduleInterview = await query.createSchedule(data);
@@ -160,11 +157,6 @@ module.exports.expertAcceptRequest = async (req,res) => {
     }
 
 }
-/* for accept and reject both this is the data format also pass the token
-{
-    "schedule_id":""
-}
- */
 
 module.exports.expertRejectRequest = async (req,res) => {
 
@@ -172,6 +164,19 @@ module.exports.expertRejectRequest = async (req,res) => {
         let deletedRequest = await query.deleteFromRequest(req.body.schedule_id);
         console.log(deletedRequest.rows[0]);
         return res.status(200).send("True");
+    }catch(err){
+        console.log(err.message);
+        return res.status(500).send("server error");
+    }
+    
+}
+
+module.exports.getExpertDataController = async (req,res) => {
+
+    try{
+        let allExpertData = await query.getExpertData();
+        // console.log(allExpertData);
+        return res.status(200).send(allExpertData.rows);
     }catch(err){
         console.log(err.message);
         return res.status(500).send("server error");

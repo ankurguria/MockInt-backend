@@ -24,3 +24,4 @@ app.use('/api/domains',require('./api/v1/domains/routes'))
 app.use('/api/auth', require('./api/v1/auth/routes'))
 app.use('/api', require('./api/v1/dashboard/routes'));
 app.use('/api/slotbooking',require('./api/v1/slotBooking/routes'));
+app.use('/api/feedback',require('./api/v1/feedback/routes'));
