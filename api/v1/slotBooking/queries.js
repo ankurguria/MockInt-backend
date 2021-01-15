@@ -44,7 +44,7 @@ module.exports.deleteSession = async (session_id) =>{
 
 // get data of all the experts on the platform
 module.exports.getExpertData = async() => {
-    let op = await db.query('select first_name, last_name, current_org, expert_in_field, charges, ratings, is_verified, expert_info from expert INNER JOIN user_profiles ON (expert.user_id = user_profiles.user_id);');
+    let op = await db.query('select user_profiles.user_id, first_name, last_name, current_org, expert_in_field, charges, ratings, is_verified, expert_info from expert INNER JOIN user_profiles ON (expert.user_id = user_profiles.user_id);');
     return op;
 }
 
