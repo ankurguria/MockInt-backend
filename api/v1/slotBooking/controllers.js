@@ -1,5 +1,7 @@
 const query = require('./queries')
 const moment = require('moment')
+const {transporter, mailOptions} = require('../sendemail/sendemail');
+
 
 slotBookingController = async (req, res) => {
     let data = req.body;
@@ -9,7 +11,7 @@ slotBookingController = async (req, res) => {
     data.created_by = req.user.id;
     data.updated_by = req.user.id;
     data.is_finished = false;
-    console.log(data);
+    // console.log(data);
     try{
         if(data.is_expert_interview){
             let slotReqData = {
@@ -23,7 +25,23 @@ slotBookingController = async (req, res) => {
                 "interviewee_id": data.interviewee_id
             }
             let slotReq = await query.createSlotRequest(slotReqData);
-            console.log(slotReq.rows[0]);
+            // console.log(slotReq.rows[0]);
+
+            let emailPeer = await query.getEmail(req.user.id);
+            let emailExpert = await query.getEmail(data.interviewer_id);
+
+            mailOptions.to = emailExpert.rows[0].email + ',' + emailPeer.rows[0].email;
+            mailOptions.subject = "Expert Interview Requested";
+            mailOptions.text = "Both the expert and peer are being notified regarding the expert interview request";
+
+            transporter.sendMail(mailOptions, function(error, info){
+                if (error) {
+                console.log(error);
+                } else {
+                console.log('Email sent: ' + info.response);
+                }
+            });
+
             return res.status(200).json({"status":"true"});
         }else{
             let searchPeersData = {
@@ -45,6 +63,21 @@ slotBookingController = async (req, res) => {
                 }
                 let slotReq = await query.createSlotRequest(slotReqData);
                 console.log(slotReq.rows[0]);
+
+                let emailPeer = await query.getEmail(req.user.id);
+
+                mailOptions.to = emailPeer.rows[0].email;
+                mailOptions.subject = "Waitlisted for Peer Interview";
+                mailOptions.text = "You have been put on a queue for a peer interview on MIP";
+
+                transporter.sendMail(mailOptions, function(error, info){
+                    if (error) {
+                    console.log(error);
+                    } else {
+                    console.log('Email sent: ' + info.response);
+                    }
+                });
+
                 return res.status(200).json({"status":false});
                 
             }else{
@@ -55,6 +88,22 @@ slotBookingController = async (req, res) => {
                 console.log(scheduleInterview.rows[0]);
                 let deletedRequest = await query.deleteFromRequest(peersInfo.rows[0].schedule_id);
                 console.log(deletedRequest.rows[0]);
+
+                let emailPeer = await query.getEmail(req.user.id);
+                let emailExpert = await query.getEmail(data.interviewer_id);
+
+                mailOptions.to = emailExpert.rows[0].email + ',' + emailPeer.rows[0].email;
+                mailOptions.subject = "Confirmed Peer Interview";
+                mailOptions.text = "You have been matched with a peer for an interview at MIP";
+
+                transporter.sendMail(mailOptions, function(error, info){
+                    if (error) {
+                    console.log(error);
+                    } else {
+                    console.log('Email sent: ' + info.response);
+                    }
+                });
+
                 return res.status(200).json({"status":"true"});
                 // if(scheduleInterview.rowCount>0){
                     // let deletedRequest = await query.deleteFromRequest(data.schedule_id);
@@ -92,12 +141,28 @@ module.exports.cancelSession = async (req, res) => {
     try{
         if(req.body.is_expert_interview){
             let deletedData = await query.deleteSession(data);
-            console.log(deletedData.rows[0]);
+            // console.log(deletedData.rows[0]);
+
+            let emailPeer = await query.getEmail(deletedData.interviewee_id);
+            let emailExpert = await query.getEmail(deletedData.interviewer_id);
+
+            mailOptions.to = emailExpert.rows[0].email + ',' + emailPeer.rows[0].email;
+            mailOptions.subject = "Cancelled Expert Interview";
+            mailOptions.text = "Both the expert and peer are being notified regarding the expert interview cancellation";
+
+            transporter.sendMail(mailOptions, function(error, info){
+                if (error) {
+                console.log(error);
+                } else {
+                console.log('Email sent: ' + info.response);
+                }
+            });
+
             return res.status(200).send("interview canceled successfully");
         }else{
             let sessionInfo = await query.getSessionInfo(data);
-            console.log(data);
-            console.log(sessionInfo);
+            // console.log(data);
+            // console.log(sessionInfo);
             let user = ((req.user.id===sessionInfo.rows[0].interviewer_id) ? sessionInfo.rows[0].interviewee_id : sessionInfo.rows[0].interviewer_id);
             let canceledUserData = {
                 "body":{
@@ -114,6 +179,22 @@ module.exports.cancelSession = async (req, res) => {
             // slotBookingController(cancledUserData, res);
             let deletedData = await query.deleteSession(data);
             // console.log(canceledUserData);
+
+            let emailPeer = await query.getEmail(sessionInfo.rows[0].interviewer_id);
+            let emailExpert = await query.getEmail(sessionInfo.rows[0].interviewer_id);
+
+            mailOptions.to = emailExpert.rows[0].email + ',' + emailPeer.rows[0].email;
+            mailOptions.subject = "Cancelled Expert Interview";
+            mailOptions.text = "Both the peers are being notified regarding the peer interview cancellation";
+
+            transporter.sendMail(mailOptions, function(error, info){
+                if (error) {
+                console.log(error);
+                } else {
+                console.log('Email sent: ' + info.response);
+                }
+            });
+
             res.status(200).send(canceledUserData);
         }
         
@@ -140,9 +221,25 @@ module.exports.expertAcceptRequest = async (req,res) => {
         }
 
         let scheduleInterview = await query.createSchedule(data);
-        console.log(scheduleInterview.rows[0]);
+        // console.log(scheduleInterview.rows[0]);
         let deletedRequest = await query.deleteFromRequest(req.body.schedule_id);
-        console.log(deletedRequest.rows[0]);
+        // console.log(deletedRequest.rows[0]);
+
+        let emailPeer = await query.getEmail(data.interviewee_id);
+        let emailExpert = await query.getEmail(data.interviewer_id);
+
+        mailOptions.to = emailExpert.rows[0].email + ',' + emailPeer.rows[0].email;
+        mailOptions.subject = "Expert Interview Confirmation";
+        mailOptions.text = "Both the expert and peer are being notified regarding the expert interview confirmation";
+
+        transporter.sendMail(mailOptions, function(error, info){
+            if (error) {
+            console.log(error);
+            } else {
+            console.log('Email sent: ' + info.response);
+            }
+        });
+
         return res.status(200).send("True");
     }catch(err){
         console.log(err.message);
@@ -155,7 +252,23 @@ module.exports.expertRejectRequest = async (req,res) => {
 
     try{
         let deletedRequest = await query.deleteFromRequest(req.body.schedule_id);
-        console.log(deletedRequest.rows[0]);
+        // console.log(deletedRequest.rows[0]);
+
+        let emailPeer = await query.getEmail(deletedRequest.user_id);
+        let emailExpert = await query.getEmail(deletedRequest.expert_id);
+
+        mailOptions.to = emailExpert.rows[0].email + ',' + emailPeer.rows[0].email;
+        mailOptions.subject = "Expert Interview Rejection";
+        mailOptions.text = "Both the expert and peer are being notified regarding the expert interview rejection";
+
+        transporter.sendMail(mailOptions, function(error, info){
+            if (error) {
+            console.log(error);
+            } else {
+            console.log('Email sent: ' + info.response);
+            }
+        });
+
         return res.status(200).send("True");
     }catch(err){
         console.log(err.message);

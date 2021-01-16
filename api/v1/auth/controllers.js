@@ -3,6 +3,8 @@ const jwtGenerator = require("../../../utils/jwtGenerator");
 const moment = require("moment")
 const query = require('./queries')
 const { validationResult, check} = require('express-validator');
+const {transporter, mailOptions} = require('../sendemail/sendemail');
+
 // = { email, first_name, last_name, ph_no, education,created_at, is_peer, country, time_zone, is_admin, is_expert, is_active, last_login, is_reported, signup_type, password } = 
 
 
@@ -30,7 +32,19 @@ let signupController = async (req, res) => {
       let newUser = await query.createUser(data);
   
       const jwtToken = jwtGenerator(newUser.rows[0].user_id);
-  
+
+      mailOptions.to = data.email;
+      mailOptions.subject = "Welcome to MIP";
+      mailOptions.text = "You have been succesfully registered to the Mock Interview Platform";
+
+      transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+          console.log(error);
+        } else {
+          console.log('Email sent: ' + info.response);
+        }
+      });
+
       return res.status(200).send({
         "token": jwtToken, 
         "is_expert": newUser.rows[0].is_expert,
@@ -54,7 +68,6 @@ let signinController = async (req, res) => {
         return res.status(422).json(errors.array());
     }
 
-    
   
     try {
       const user = await query.checkUserExist(email)
@@ -72,6 +85,7 @@ let signinController = async (req, res) => {
         return res.status(401).json("Invalid Password");
       }
       const jwtToken = jwtGenerator(user.rows[0].user_id);
+      
       return res.json({"is_expert":user.rows[0].is_expert, "token":jwtToken});
     } catch (err) {
       console.error(err.message);

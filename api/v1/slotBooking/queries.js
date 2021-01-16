@@ -57,3 +57,8 @@ module.exports.getInterviewRequestInfo = async(schedule_id) => {
     let op = await db.query('select * from interview_requests where schedule_id=$1',[schedule_id]);
     return op
 }
+
+module.exports.getEmail = async(user_id) => {
+    let op = await db.query('select email from user_profiles where user_id = $1', [user_id]);
+    return op;
+}
