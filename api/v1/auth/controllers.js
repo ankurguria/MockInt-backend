@@ -72,7 +72,7 @@ let signinController = async (req, res) => {
         return res.status(401).json("Invalid Password");
       }
       const jwtToken = jwtGenerator(user.rows[0].user_id);
-      return res.json({ jwtToken });
+      return res.json({"is_expert":user.rows[0].is_expert, "token":jwtToken});
     } catch (err) {
       console.error(err.message);
       res.status(500).send("Server error");

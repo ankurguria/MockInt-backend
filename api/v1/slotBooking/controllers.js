@@ -9,8 +9,7 @@ slotBookingController = async (req, res) => {
     data.created_by = req.user.id;
     data.updated_by = req.user.id;
     data.is_finished = false;
-    data.called_due_to_cancel = false;
-    
+    console.log(data);
     try{
         if(data.is_expert_interview){
             let slotReqData = {
@@ -41,28 +40,22 @@ slotBookingController = async (req, res) => {
                     "created_at": data.created_at,
                     "updated_at": data.updated_at,
                     "is_expert_interview": false,
-                    "expert_id": null
+                    "expert_id": null,
+                    "type_of_interview":data.type_of_interview
                 }
                 let slotReq = await query.createSlotRequest(slotReqData);
                 console.log(slotReq.rows[0]);
-                if(data.called_due_to_cancel){
-                    return true;
-                }else{
-                    return res.status(200).json({"status":false, "message":"slot requested waiting for a peer with similar skills and time preferences to match we'll get in touch with you soon once a match is found"});
-                }
+                return res.status(200).json({"status":false, "message":"slot requested waiting for a peer with similar skills and time preferences to match we'll get in touch with you soon once a match is found"});
                 
             }else{
                 data.interviewer_id = peersInfo.rows[0].user_id;
+                data.is_expert_interview = peersInfo.rows[0].is_expert_interview;
                 // data.slot_timestamp = ;
                 let scheduleInterview = await query.createSchedule(data);
                 console.log(scheduleInterview.rows[0]);
                 let deletedRequest = await query.deleteFromRequest(peersInfo.rows[0].schedule_id);
                 console.log(deletedRequest.rows[0]);
-                if(data.called_due_to_cancel){
-                    return true;
-                }else{
-                    return res.status(200).send("True");
-                }
+                return res.status(200).json({"status":"true", "messsage":"your schedule has been successfully generated"});
                 // if(scheduleInterview.rowCount>0){
                     // let deletedRequest = await query.deleteFromRequest(data.schedule_id);
                     // console.log(deletedRequest.rows[0]);
