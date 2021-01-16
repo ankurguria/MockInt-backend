@@ -14,8 +14,9 @@ let userDashboardController = async (req, res) => {
             let requestedInter = await query.getExperRequestedtInterviewsInfo(userId);
             let upcomingInter = await query.getUpcomingCompletedInterviewsInfo({"is_finished" : false, "user_id": userId});
             let finishedInter = await query.getUpcomingCompletedInterviewsInfo({"is_finished" : true, "user_id": userId});
-
+            // let expertProfile = await query.getUserProfile()
             console.log(userId);
+
             data = {
                 "max_score": "__",
                 "avg score":"__",
