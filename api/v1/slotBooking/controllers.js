@@ -24,7 +24,7 @@ slotBookingController = async (req, res) => {
             }
             let slotReq = await query.createSlotRequest(slotReqData);
             console.log(slotReq.rows[0]);
-            return res.status(200).send("True");
+            return res.status(200).json({"status":"true"});
         }else{
             let searchPeersData = {
                 "preferred_slot":data.preferred_slot,
@@ -45,7 +45,7 @@ slotBookingController = async (req, res) => {
                 }
                 let slotReq = await query.createSlotRequest(slotReqData);
                 console.log(slotReq.rows[0]);
-                return res.status(200).json({"status":false, "message":"slot requested waiting for a peer with similar skills and time preferences to match we'll get in touch with you soon once a match is found"});
+                return res.status(200).json({"status":false});
                 
             }else{
                 data.interviewer_id = peersInfo.rows[0].user_id;
@@ -55,7 +55,7 @@ slotBookingController = async (req, res) => {
                 console.log(scheduleInterview.rows[0]);
                 let deletedRequest = await query.deleteFromRequest(peersInfo.rows[0].schedule_id);
                 console.log(deletedRequest.rows[0]);
-                return res.status(200).json({"status":"true", "messsage":"your schedule has been successfully generated"});
+                return res.status(200).json({"status":"true"});
                 // if(scheduleInterview.rowCount>0){
                     // let deletedRequest = await query.deleteFromRequest(data.schedule_id);
                     // console.log(deletedRequest.rows[0]);
