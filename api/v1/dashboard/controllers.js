@@ -23,6 +23,7 @@ let userDashboardController = async (req, res) => {
                 "first_name":user.rows[0].first_name,
                 "last_name": user.rows[0].last_name,
                 "total_interviews":"__",
+                "is_expert": true,
                 "requested_interviews": requestedInter.rows,
                 "upcoming_interviews": upcomingInter.rows,
                 "completed_interviews": finishedInter.rows,
@@ -39,6 +40,7 @@ let userDashboardController = async (req, res) => {
                 "first_name":user.rows[0].first_name,
                 "last_name": user.rows[0].last_name,
                 "total_interviews":"__",
+                "is_expert": false,
                 "upcoming_interviews": upcomingInter.rows,
                 "completed_interviews": finishedInter.rows,
             }
