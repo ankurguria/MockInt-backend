@@ -24,7 +24,7 @@ slotBookingController = async (req, res) => {
             }
             let slotReq = await query.createSlotRequest(slotReqData);
             console.log(slotReq.rows[0]);
-            return res.status(200).json({"status":"true"});
+            return res.status(200).json({"status":"false"});
         }else{
             let searchPeersData = {
                 "preferred_slot":data.preferred_slot,
