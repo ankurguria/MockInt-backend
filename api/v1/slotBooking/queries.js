@@ -26,7 +26,7 @@ module.exports.searchPeer = async (data) => {
 
 module.exports.deleteFromRequest = async(schedule_id) => {
     let op = await db.query('delete from interview_requests where schedule_id = $1 returning *;',[schedule_id]);
-
+    
     return op;
 }
 
@@ -59,6 +59,6 @@ module.exports.getInterviewRequestInfo = async(schedule_id) => {
 }
 
 module.exports.getEmail = async(user_id) => {
-    let op = await db.query('select email from user_profiles where user_id = $1', [user_id]);
+    let op = await db.query('select email from user_profiles where user_id = $1;', [user_id]);
     return op;
 }

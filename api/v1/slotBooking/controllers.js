@@ -143,8 +143,8 @@ module.exports.cancelSession = async (req, res) => {
             let deletedData = await query.deleteSession(data);
             // console.log(deletedData.rows[0]);
 
-            let emailPeer = await query.getEmail(deletedData.interviewee_id);
-            let emailExpert = await query.getEmail(deletedData.interviewer_id);
+            let emailPeer = await query.getEmail(deletedData.rows[0].interviewee_id);
+            let emailExpert = await query.getEmail(deletedData.rows[0].interviewer_id);
 
             mailOptions.to = emailExpert.rows[0].email + ',' + emailPeer.rows[0].email;
             mailOptions.subject = "Cancelled Expert Interview";
@@ -254,8 +254,9 @@ module.exports.expertRejectRequest = async (req,res) => {
         let deletedRequest = await query.deleteFromRequest(req.body.schedule_id);
         // console.log(deletedRequest.rows[0]);
 
-        let emailPeer = await query.getEmail(deletedRequest.user_id);
-        let emailExpert = await query.getEmail(deletedRequest.expert_id);
+        let emailPeer = await query.getEmail(deletedRequest.rows[0].user_id);
+        let emailExpert = await query.getEmail(deletedRequest.rows[0].expert_id);
+        // console.log(emailExpert);
 
         mailOptions.to = emailExpert.rows[0].email + ',' + emailPeer.rows[0].email;
         mailOptions.subject = "Expert Interview Rejection";
