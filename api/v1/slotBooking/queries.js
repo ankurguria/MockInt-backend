@@ -15,10 +15,11 @@ module.exports.createSlotRequest = async (data) => {
 }
 
 module.exports.searchPeer = async (data) => {
-    let op = await db.query('select * from interview_requests where preferred_slot = $1 AND type_of_interview = $2',
+    let op = await db.query('select * from interview_requests where preferred_slot = $1 AND type_of_interview = $2 AND (interviewer_id!=$3 OR interviewee_id!=$3)',
     [
         data.preferred_slot,
-        data.type_of_interview
+        data.type_of_interview,
+        data.user_id
         
     ]);
     return op;
@@ -43,8 +44,11 @@ module.exports.deleteSession = async (session_id) =>{
 }
 
 // get data of all the experts on the platform
-module.exports.getExpertData = async() => {
-    let op = await db.query('select user_profiles.user_id, first_name, last_name, current_org, expert_in_field, charges, ratings, is_verified, expert_info from expert INNER JOIN user_profiles ON (expert.user_id = user_profiles.user_id);');
+module.exports.getExpertData = async(user_id) => {
+    let op = await db.query('select user_profiles.user_id, first_name, last_name, current_org, expert_in_field, charges, ratings, is_verified, expert_info from expert INNER JOIN user_profiles ON (expert.user_id = user_profiles.user_id) where expert.user_id!=$1;',
+    [
+        user_id
+    ]);
     return op;
 }
 

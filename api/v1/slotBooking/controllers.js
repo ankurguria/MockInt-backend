@@ -46,7 +46,8 @@ slotBookingController = async (req, res) => {
         }else{
             let searchPeersData = {
                 "preferred_slot":data.preferred_slot,
-                "type_of_interview" : data.type_of_interview
+                "type_of_interview" : data.type_of_interview,
+                "user_id": req.user.id
             }
             let peersInfo = await query.searchPeer(searchPeersData);
             console.log(peersInfo.rows[0]);
@@ -169,7 +170,7 @@ module.exports.cancelSession = async (req, res) => {
                     "user":{
                         "id":user,
                     },
-                    "is_expert_interview":"false",
+                    "is_expert_interview":false,
                     "preferred_slot": sessionInfo.slot_timestamp,
                     "type_of_interview": sessionInfo.type_of_interview,
                     "called_due_to_cancel": true
@@ -281,7 +282,8 @@ module.exports.expertRejectRequest = async (req,res) => {
 module.exports.getExpertDataController = async (req,res) => {
 
     try{
-        let allExpertData = await query.getExpertData();
+        let allExpertData = await query.getExpertData(req.user.id);
+
         // console.log(allExpertData);
         return res.status(200).send(allExpertData.rows);
     }catch(err){
