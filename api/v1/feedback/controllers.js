@@ -20,9 +20,10 @@ module.exports.giveFeedback = async (req,res) => {
 }
 
 module.exports.viewFeedback = async (req,res) => {
-
+    const data = req.body;
+    data.created_by = req.user.id;
     try{
-        let feedback = await query.viewFeedback(req.body.session_id);
+        let feedback = await query.viewFeedback(data);
         // console.log(allExpertData);
         return res.status(200).send(feedback.rows[0]);
     }catch(err){

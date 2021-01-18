@@ -1,7 +1,7 @@
 const db = require('../../../config/dbConfig')
 
 module.exports.giveFeedback = async (data) => {
-    let op = await db.query('insert into feedback ("session_id", "created_by", "updated_by", "created_at", "updated_at", "suggestions_for_us", "feedback", "overall_score", "report") values ($1, $2, $3, $4, $5, $6, $7, $8, $9);',
+    let op = await db.query('insert into feedback ("session_id", "created_by", "updated_by", "created_at", "updated_at", "suggestions_for_us", "feedback", "overall_score", "report") values ($1, $2, $3, $4, $5, $6, $7, $8, $9) returning *;',
     [
         data.session_id,
         data.created_by, 
@@ -17,6 +17,6 @@ module.exports.giveFeedback = async (data) => {
 }
 
 module.exports.viewFeedback = async (data) => {
-    let op = await db.query('select * from feedback where session_id = $1 AND created_by != $2', [data.session_id, data.created_by]);
+    let op = await db.query('select * from feedback where session_id = $1 AND created_by != $2;', [data.session_id, data.created_by]);
     return op;
 }
