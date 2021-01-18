@@ -5,7 +5,7 @@ const controller = require("./controllers")
 
 
 router.post('/giveFeedback', authorize, controller.giveFeedback);
-router.get('/viewFeedback', authorize, controller.viewFeedback);
+router.post('/viewFeedback', authorize, controller.viewFeedback);
 
 
 module.exports = router;

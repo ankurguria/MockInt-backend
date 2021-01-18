@@ -20,3 +20,10 @@ module.exports.viewFeedback = async (data) => {
     let op = await db.query('select * from feedback where session_id = $1 AND created_by != $2;', [data.session_id, data.created_by]);
     return op;
 }
+
+module.exports.markFinished = async (data) => {
+    let op = await db.query("update scheduled_interviews set is_finished='true' where session_id=$1 returning *;",
+    [
+        data.session_id
+    ])
+}

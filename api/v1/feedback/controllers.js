@@ -9,6 +9,7 @@ module.exports.giveFeedback = async (req,res) => {
     data.created_by = req.user.id;
     data.updated_by = req.user.id;
     try{
+        let finished_session = await query.markFinished(data);
         let feedbackGiven = await query.giveFeedback(data);
         // console.log(deletedRequest.rows[0]);
         return res.status(200).send("Feedback given");
