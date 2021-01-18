@@ -26,7 +26,10 @@ module.exports.viewFeedback = async (req,res) => {
     try{
         let feedback = await query.viewFeedback(data);
         // console.log(allExpertData);
-        return res.status(200).send(feedback.rows[0]);
+        if(feedback.rows.length>0)
+            return res.status(200).send(feedback.rows[0]);
+        else
+            return res.status(200).json({"feedback": "not yet given you must wait for for 1 or 2 days for your peer to give feedback then write back to us if feedback is still not available "})
     }catch(err){
         console.log(err.message);
         return res.status(500).send("server error");
