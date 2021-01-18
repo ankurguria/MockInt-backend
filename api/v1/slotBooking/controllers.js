@@ -148,7 +148,7 @@ module.exports.cancelSession = async (req, res) => {
 
             mailOptions.to = emailExpert.rows[0].email + ',' + emailPeer.rows[0].email;
             mailOptions.subject = "Cancelled Expert Interview";
-            mailOptions.text = "Both the expert and peer are being notified regarding the expert interview cancellation";
+            mailOptions.text = "Both the expert and peer are being notified regarding the interview cancellation";
 
             transporter.sendMail(mailOptions, function(error, info){
                 if (error) {
@@ -161,8 +161,8 @@ module.exports.cancelSession = async (req, res) => {
             return res.status(200).send("interview canceled successfully");
         }else{
             let sessionInfo = await query.getSessionInfo(data);
-            // console.log(data);
-            // console.log(sessionInfo);
+            console.log(data);
+            console.log(sessionInfo.rows[0]);
             let user = ((req.user.id===sessionInfo.rows[0].interviewer_id) ? sessionInfo.rows[0].interviewee_id : sessionInfo.rows[0].interviewer_id);
             let canceledUserData = {
                 "body":{
