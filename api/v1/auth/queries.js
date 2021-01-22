@@ -24,7 +24,7 @@ module.exports.createUser = createUser;
 
 
 let createExpertProfile = async (data) =>{
-let op = await db.query('insert into expert (user_id, current_org, expert_in_field, charges, ratings, expert_info) values ($1, $2, $3, $4, $5, $6) returning *',[
+let op = await db.query('insert into expert (user_id, current_org, expert_in_field, charges, ratings, expert_info) values ($1, $2, $3, $4, $5, $6) on conflict (user_id) do update set current_org=$2, expert_in_field=$3 , charges=$4, expert_info=$6 returning *',[
     data.user_id, data.current_org, data.expert_in_field, data.charges, 3, data.expert_info
 ])
 return op;

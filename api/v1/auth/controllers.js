@@ -117,7 +117,7 @@ let signinController = async (req, res) => {
     try{
       let expertProfile = await query.createExpertProfile(data);
       console.log(expertProfile.rows[0]);
-      return res.status(200).send("expert profile creation successfull");
+      return res.status(200).json({status:true, message:"expert profile creation successfull"});
     }catch(err){
       console.log(err.message);
       return res.status(500).send("server error");
