@@ -31,8 +31,10 @@ module.exports.createUser = createUser;
 
 
 let createExpertProfile = async (data) =>{
-let op = await db.query('insert into expert (user_id, current_org, expert_in_field, charges, ratings, expert_info) values ($1, $2, $3, $4, $5, $6) on conflict (user_id) do update set current_org=$2, expert_in_field=$3 , charges=$4, expert_info=$6 returning *',[
-    data.user_id, data.current_org, data.expert_in_field, data.charges, 3, data.expert_info
+    let rating = Math.floor(Math.random() * (5 - 3 + 1)) + 3;
+    console.log(rating);
+let op = await db.query('insert into expert (user_id, current_org, expert_in_field, charges, ratings, expert_info, preferred_slot_1, preferred_slot_2, preferred_slot_3) values ($1, $2, $3, $4, $5, $6, $7, $8, $9) on conflict (user_id) do update set current_org=$2, expert_in_field=$3 , charges=$4, ratings=$5, expert_info=$6, preferred_slot_1=$7, preferred_slot_2=$8, preferred_slot_3=$9 returning *',[
+    data.user_id, data.current_org, data.expert_in_field, data.charges, rating, data.expert_info, data.preferred_slot_1, data.preferred_slot_2, data.preferred_slot_3
 ])
 return op;
 }
