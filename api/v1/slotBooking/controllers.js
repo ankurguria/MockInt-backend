@@ -90,20 +90,20 @@ slotBookingController = async (req, res) => {
                 let deletedRequest = await query.deleteFromRequest(peersInfo.rows[0].schedule_id);
                 console.log(deletedRequest.rows[0]);
 
-                let emailPeer = await query.getEmail(req.user.id);
-                let emailExpert = await query.getEmail(data.interviewer_id);
+                // let emailPeer = await query.getEmail(req.user.id);
+                // let emailExpert = await query.getEmail(data.interviewer_id);
 
-                mailOptions.to = emailExpert.rows[0].email + ',' + emailPeer.rows[0].email;
-                mailOptions.subject = "Confirmed Peer Interview";
-                mailOptions.text = "You have been matched with a peer for an interview at MIP";
+                // mailOptions.to = emailExpert.rows[0].email + ',' + emailPeer.rows[0].email;
+                // mailOptions.subject = "Confirmed Peer Interview";
+                // mailOptions.text = "You have been matched with a peer for an interview at MIP";
 
-                transporter.sendMail(mailOptions, function(error, info){
-                    if (error) {
-                    console.log(error);
-                    } else {
-                    console.log('Email sent: ' + info.response);
-                    }
-                });
+                // transporter.sendMail(mailOptions, function(error, info){
+                //     if (error) {
+                //     console.log(error);
+                //     } else {
+                //     console.log('Email sent: ' + info.response);
+                //     }
+                // });
 
                 return res.status(200).json({"status":"true"});
                 // if(scheduleInterview.rowCount>0){
