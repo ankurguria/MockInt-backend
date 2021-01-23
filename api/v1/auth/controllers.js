@@ -59,6 +59,7 @@ let signupController = async (req, res) => {
       });
 
       return res.status(200).send({
+        "status": true,
         "token": jwtToken, 
         "is_expert": newUser.rows[0].is_expert,
       });
@@ -99,7 +100,7 @@ let signinController = async (req, res) => {
       }
       const jwtToken = jwtGenerator(user.rows[0].user_id);
       
-      return res.json({"is_expert":user.rows[0].is_expert, "token":jwtToken});
+      return res.json({"status": true, "is_expert":user.rows[0].is_expert, "token":jwtToken});
     } catch (err) {
       console.error(err.message);
       res.status(500).send("Server error");
