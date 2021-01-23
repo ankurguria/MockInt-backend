@@ -11,7 +11,7 @@ const {transporter, mailOptions} = require('../sendemail/sendemail');
 let signupController = async (req, res) => {
     const errors = validationResult(req);
     if(!errors.isEmpty()){
-        return res.status(422).json(errors.array());
+        return res.status(422).json({"status": false, "error":errors.array()});
     }
     let data = req.body;
     console.log(data);
@@ -23,7 +23,12 @@ let signupController = async (req, res) => {
     try {
       const user = await query.checkUserExist(data.email);
       if (user.rows.length > 0) {
-        return res.status(401).json({"error":"User already exist!"});
+        return res.status(401).json({"status": false,"error":[{
+          "value": data.email,
+          "msg": "User already exist!",
+          "param": "email",
+          "location": "body"
+        }]});
       }
   
       const salt = await bcrypt.genSalt(10);
