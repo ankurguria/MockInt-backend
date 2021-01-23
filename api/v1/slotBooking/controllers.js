@@ -52,7 +52,7 @@ slotBookingController = async (req, res) => {
             let peersInfo = await query.searchPeer(searchPeersData);
             console.log(peersInfo.rows[0]);
             // return res.status(200).json(peersInfo);
-            if(peersInfo.rowCount===0){
+            if(peersInfo.rows.length===0){
                 let slotReqData = {
                     "user_id": req.user.id,
                     "preferred_slot": data.preferred_slot,
