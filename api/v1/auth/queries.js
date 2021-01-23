@@ -3,7 +3,7 @@ const db = require("../../../config/dbConfig");
 
 
 let checkUserExist = async (email) => {
-    let op = await db.query('SELECT * FROM "user_profiles" WHERE email = $1', [
+    let op = await db.query('SELECT * FROM "user_profiles" WHERE email = $1;', [
         email
       ]);
 
@@ -11,6 +11,13 @@ let checkUserExist = async (email) => {
 }
 
 module.exports.checkUserExist = checkUserExist;
+module.exports.checkUserMobileExist = async (ph_no) => {
+    let op = await db.query('SELECT * FROM "user_profiles" WHERE ph_no = $1;', [
+        ph_no
+      ]);
+
+    return op;
+}
 
 let createUser = async (data) => {
 

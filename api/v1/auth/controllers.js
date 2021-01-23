@@ -22,13 +22,21 @@ let signupController = async (req, res) => {
     // till here
     try {
       const user = await query.checkUserExist(data.email);
-      if (user.rows.length > 0) {
-        return res.status(401).json({"status": false,"error":[{
-          "value": data.email,
-          "msg": "User already exist!",
-          "param": "email",
-          "location": "body"
-        }]});
+      const userMob = await query.checkUserMobileExist(data.ph_no);
+      if (user.rows.length > 0 || userMob.rows.length > 0) {
+        return res.status(401).json({"status": false,"error":[
+          {
+            "value": data.email,
+            "msg": "User already exist!",
+            "param": "email",
+            "location": "body"
+          },
+          {
+            "value": data.ph_no,
+            "msg": "Mobile number already exist!",
+            "param": "ph_no",
+            "location": "body"
+          }]});
       }
   
       const salt = await bcrypt.genSalt(10);
