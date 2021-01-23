@@ -15,7 +15,7 @@ module.exports.createSlotRequest = async (data) => {
 }
 
 module.exports.searchPeer = async (data) => {
-    let op = await db.query('select * from interview_requests where preferred_slot = $1 AND type_of_interview = $2 AND (interviewer_id!=$3 OR interviewee_id!=$3)',
+    let op = await db.query('select * from interview_requests where preferred_slot = $1 AND type_of_interview = $2 AND (expert_id!=$3 OR user_id!=$3)',
     [
         data.preferred_slot,
         data.type_of_interview,
