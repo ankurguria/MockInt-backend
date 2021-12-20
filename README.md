@@ -23,3 +23,9 @@ The backend of a full-stack app to conduct mock interviews for job seekers, with
 <img src="./images/bookingFlow3.png" alt="d" width="800"/>
 <img src="./images/bookingFlow4.png" alt="d" width="800"/>
 <img src="./images/bookingFlow5.png" alt="d" width="800"/>
+
+
+### Project setup:
+- clone this repo. "cd" into the repo
+- run "npm install"
+- run "npm run dev"
