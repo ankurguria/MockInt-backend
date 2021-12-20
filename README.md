@@ -17,7 +17,7 @@ The backend of a full-stack app to conduct mock interviews for job seekers, with
 <img src="./images/nonExpertDashboard.png" alt="d" width="800"/>
 
 
-- Flow of Interview Booking:
+## Flow of Interview Booking:
 <img src="./images/bookingFlow1.png" alt="d" width="800"/>
 <img src="./images/bookingFlow2.png" alt="d" width="800"/>
 <img src="./images/bookingFlow3.png" alt="d" width="800"/>
